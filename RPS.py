@@ -74,51 +74,46 @@ def player(prev_play, opponent_history=[]):
     
     # Strategy based on detected bot type
     counter = {"R": "P", "P": "S", "S": "R"}
-    
+
     if player.bot_type == "quincy":
         # Quincy plays: R, P, P, S, R (5-move cycle)
         quincy_cycle = ["R", "P", "P", "S", "R"]
         next_move = quincy_cycle[len(opponent_history) % 5]
         guess = counter[next_move]
-    
+
     elif player.bot_type == "kris":
         # Kris plays: P, P, R, R, P, S, S, R, R, P (10-move cycle)
         kris_cycle = ["P", "P", "R", "R", "P", "S", "S", "R", "R", "P"]
         next_move = kris_cycle[len(opponent_history) % 10]
         guess = counter[next_move]
-    
+
     elif player.bot_type == "abbey":
-        # Strategy against Abbey: Use a rotating strategy to stay unpredictable
-        # Mix of anti-frequency and some randomness
-        if len(player.my_history) >= 5:
-            # Use a counter-rotation strategy
-            rotation = ["R", "P", "S", "P", "S", "R", "S", "R", "P"]
-            guess = rotation[len(player.my_history) % 9]
+        # Abbey adapts to our last move, so play the move that beats Abbey's previous move
+        if len(opponent_history) > 0:
+            abbey_last = opponent_history[-1]
+            guess = counter[abbey_last]
         else:
-            # Early moves: use specific pattern that works against Abbey
-            early_pattern = ["P", "S", "R", "P", "S"]
-            guess = early_pattern[len(player.my_history) % 5]
-    
+            guess = "R"
+
     elif player.bot_type == "mrugesh":
         # Against Mrugesh: Keep frequencies balanced
         if len(player.my_history) >= 5:
             my_counts = {"R": player.my_history.count("R"), 
                         "P": player.my_history.count("P"), 
                         "S": player.my_history.count("S")}
-            
             # Play the least frequent move
             min_count = min(my_counts.values())
             options = [move for move, count in my_counts.items() if count == min_count]
             guess = random.choice(options) if options else "R"
         else:
             guess = random.choice(["R", "P", "S"])
-    
+
     else:
         # Fallback: assume Quincy
         quincy_cycle = ["R", "P", "P", "S", "R"]
         next_move = quincy_cycle[len(opponent_history) % 5]
         guess = counter[next_move]
-    
+
     # Record our move
     player.my_history.append(guess)
     return guess
