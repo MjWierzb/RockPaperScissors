@@ -84,16 +84,36 @@ def player(prev_play, opponent_history=[]):
     elif player.bot_type == "kris":
         # Kris plays: P, P, R, R, P, S, S, R, R, P (10-move cycle)
         kris_cycle = ["P", "P", "R", "R", "P", "S", "S", "R", "R", "P"]
-        next_move = kris_cycle[len(opponent_history) % 10]
-        guess = counter[next_move]
+        # Check if Kris is following the cycle in the last 10 moves
+        cycle_matches = 0
+        for i in range(min(10, len(opponent_history))):
+            expected = kris_cycle[i % 10]
+            if opponent_history[-10+i] == expected:
+                cycle_matches += 1
+        if cycle_matches >= 8:
+            next_move = kris_cycle[len(opponent_history) % 10]
+            guess = counter[next_move]
+        else:
+            # Kris is adapting, so counter his most frequent move in last 10
+            recent = opponent_history[-10:] if len(opponent_history) >= 10 else opponent_history
+            if recent:
+                freq = {m: recent.count(m) for m in "RPS"}
+                most_freq = max(freq, key=freq.get)
+                guess = counter[most_freq]
+            else:
+                guess = random.choice(["R", "P", "S"])
 
     elif player.bot_type == "abbey":
         # Abbey adapts to our last move, so play the move that beats Abbey's previous move
+        # Add randomness to avoid being exploited
         if len(opponent_history) > 0:
             abbey_last = opponent_history[-1]
-            guess = counter[abbey_last]
+            if random.random() < 0.8:
+                guess = counter[abbey_last]
+            else:
+                guess = random.choice(["R", "P", "S"])
         else:
-            guess = "R"
+            guess = random.choice(["R", "P", "S"])
 
     elif player.bot_type == "mrugesh":
         # Against Mrugesh: Keep frequencies balanced
