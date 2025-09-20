@@ -1,6 +1,28 @@
 # Rock Paper Scissors
 
-A Python implementation of the classic Rock, Paper, Scissors game tailored for the [freeCodeCamp Machine Learning with Python certification project](https://www.freecodecamp.org/learn/machine-learning-with-python/machine-learning-with-python-projects/rock-paper-scissors). The repository contains an adaptive bot (`player`) that learns how to counter several pre-built opponents.
+A Python implementation of the classic Rock, Paper, Scissors game tailored for the [freeCodeCamp Machine Learning with Python certification project](https://www.freecodecamp.org/learn/machine-learning-with-python/machine-learning-with-python-projects/rock-paper-scissors). The repository contains an adaptive bot (`player`) that learns how to counter several pre-built opponents while giving you a sandbox for experimenting with alternative strategies.
+
+## Table of Contents
+
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
+- [Running the Project](#running-the-project)
+- [Strategy Overview](#strategy-overview)
+- [Customizing the Player](#customizing-the-player)
+- [Project Goals & Learning Outcomes](#project-goals--learning-outcomes)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Related Resources](#related-resources)
+- [License](#license)
+
+## Features
+
+- ✅ **Adaptive opponent detection** – automatically infers which built-in bot is being faced and shifts tactics accordingly.
+- 🧪 **Comprehensive unit tests** – verifies that your strategy beats each supplied opponent at least 60% of the time.
+- 🕹️ **Interactive play mode** – challenge any bot manually to observe behavior in real time.
+- 🧠 **Learning playground** – cleanly separated modules make it easy to prototype and compare new approaches.
 
 ## Project Structure
 
@@ -39,6 +61,18 @@ python -m unittest test_module
 
 The tests ensure that the adaptive `player` wins at least 60% of games against every provided bot.
 
+### Run a quick benchmark against one opponent
+
+```bash
+python - <<'PY'
+from RPS_game import play, abbey, player
+
+print(play(player, abbey, 1000))
+PY
+```
+
+The snippet above bypasses `main.py` so that you can iterate quickly on a single matchup while tuning your strategy.
+
 ### Play manually against a bot
 
 Uncomment the interactive line in `main.py`:
@@ -62,7 +96,40 @@ Once a bot is detected, the strategy switches to a tailored counter approach. Wh
 
 ## Customizing the Player
 
-You are encouraged to tweak the logic in `RPS.py` or implement a completely new strategy. Use the helper opponents in `RPS_game.py` and the tests in `test_module.py` to validate improvements before submitting your solution to freeCodeCamp.
+You are encouraged to tweak the logic in `RPS.py` or implement a completely new strategy. The following workflow keeps iterations quick and verifiable:
+
+1. **Fork or branch** from the current solution (if working in your own repository).
+2. **Modify** the `player` function in `RPS.py`. Keep the signature `def player(prev_play, opponent_history=[])` intact so the tests continue to run.
+3. **Instrument** your strategy with temporary `print` statements or logging while experimenting. Remove them before final submission.
+4. **Benchmark** frequently against specific bots (see the [quick benchmark](#run-a-quick-benchmark-against-one-opponent) snippet above).
+5. **Validate** using `python -m unittest test_module` to ensure you still meet the 60% win requirement across all opponents.
+
+If you devise a novel opponent, add it to `RPS_game.py` and expand the tests accordingly to evaluate your approach under new conditions.
+
+## Project Goals & Learning Outcomes
+
+Working through this project will help you:
+
+- Practice designing heuristics that respond to noisy, adversarial input data.
+- Explore state tracking and pattern recognition techniques without relying on external libraries.
+- Gain confidence writing and running Python unit tests.
+- Understand how simple rule-based systems can mimic reinforcement-learning style adaptation.
+
+## Troubleshooting
+
+- **Python not found** – ensure you are running Python 3.8+ (`python --version`). Adjust the commands to use `python3` if necessary.
+- **Tests still fail after improvements** – double-check that the `player` function maintains state between calls by using a mutable default argument or another shared mechanism.
+- **Interactive mode exits immediately** – confirm the `play` call is uncommented and that `verbose=True` is passed if you want to see each round printed.
+
+## Contributing
+
+Issues and pull requests that improve the strategy, documentation, or testing workflow are welcome. Please include a brief description of the change, why it is beneficial, and any relevant test output.
+
+## Related Resources
+
+- [Original freeCodeCamp project description](https://www.freecodecamp.org/learn/machine-learning-with-python/machine-learning-with-python-projects/rock-paper-scissors)
+- [Python `random` module documentation](https://docs.python.org/3/library/random.html)
+- [unittest module documentation](https://docs.python.org/3/library/unittest.html)
 
 ## License
 
